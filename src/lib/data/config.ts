@@ -1,24 +1,18 @@
-import axios from "axios";
-
 export const API_URL = process.env.NEXT_PUBLIC_REMOTE_API_URL || "https://futuramaapi.com/graphql";
 
-const apiCaller = axios.create({
-  baseURL: API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  timeout: 10000, // 10 seconds timeout
-});
-
-export const fetcher = async (query: string, variables?: Record<string, unknown>) => {
-  const result = await apiCaller.post("", {
-    query,
-    variables,
+export const fetcher = async (query: string) => {
+  const result = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query: query }),
   });
 
   if (result.status !== 200) {
+    console.log(result.statusText)
     throw new Error(`Error fetching data: ${result.statusText}`);
   }
 
-  return result.data;
+  return result.json();
 };
